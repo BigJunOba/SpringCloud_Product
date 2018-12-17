@@ -1,5 +1,6 @@
 package com.springcloud.sellerbuyer.product.controller;
 
+import com.springcloud.sellerbuyer.product.DTO.CartDTO;
 import com.springcloud.sellerbuyer.product.Utils.ResultVOUtil;
 import com.springcloud.sellerbuyer.product.ViewObject.ProductInfoVO;
 import com.springcloud.sellerbuyer.product.ViewObject.ProductVO;
@@ -10,9 +11,7 @@ import com.springcloud.sellerbuyer.product.service.CategoryService;
 import com.springcloud.sellerbuyer.product.service.ProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/product")
-public class productController {
+public class ProductController {
 
     @Autowired
     private ProductService productService;
@@ -63,4 +62,18 @@ public class productController {
         return ResultVOUtil.success(productVOList);
     }
 
+    /**
+     * 获取商品列表给订单服务用
+     * @param productIdList 购物车里的商品Id列表
+     * @return
+     */
+    @PostMapping("/listForOrder")
+    public List<ProductInfo> listForOrder(@RequestBody List<String> productIdList) {
+        return productService.findList(productIdList);
+    }
+
+    @PostMapping("/decreaseStock")
+    public void decreaseStock(@RequestBody List<CartDTO> cartDTOList) {
+        productService.decreaseStock(cartDTOList);
+    }
 }
